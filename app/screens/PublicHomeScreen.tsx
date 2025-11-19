@@ -1,0 +1,109 @@
+import React, { useEffect } from "react";
+import { View, StyleSheet, Image } from "react-native";
+import { Text, Button, Card } from "react-native-paper";
+import { useAuth } from "../../context/AuthBase";
+import { useNavigation } from "@react-navigation/native";
+import  ToggleButton  from "../components/ToggleButton";
+
+export default function PublicHomeScreen() {
+  const { user, loading } = useAuth();
+  const navigation = useNavigation();
+
+  // Redirigir si hay usuario logueado
+  useEffect(() => {
+    if (!loading && user) {
+      navigation.navigate("Feed" as never);
+    }
+  }, [user, loading, navigation]);
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <Text>Cargando...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.themeToggle}>
+        <ToggleButton/>
+      </View>
+
+      <Card style={styles.card}>
+        <Card.Content style={{ alignItems: "center" }}>
+          <Text variant="titleLarge" style={styles.title}>
+            Bienvenido a "La Red"
+          </Text>
+          <Text style={styles.subtitle}>
+            Conéctate con tus amigos y comparte momentos especiales
+          </Text>
+
+          <View style={styles.buttonContainer}>
+            <Button
+              mode="contained"
+              onPress={() => navigation.navigate("Login" as never)}
+              style={styles.button}
+            >
+              Iniciar Sesión
+            </Button>
+
+            <Button
+              mode="contained"
+              buttonColor="green"
+              onPress={() => navigation.navigate("Register" as never)}
+              style={styles.button}
+            >
+              Crear Cuenta
+            </Button>
+
+          </View>
+        </Card.Content>
+      </Card>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: "#f5f5f5",
+  },
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  themeToggle: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+  },
+  card: {
+    width: "100%",
+    maxWidth: 400,
+    padding: 20,
+    borderRadius: 12,
+    elevation: 4,
+  },
+  title: {
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  subtitle: {
+    textAlign: "center",
+    color: "#666",
+    marginBottom: 16,
+  },
+  buttonContainer: {
+    width: "100%",
+    marginTop: 10,
+  },
+  button: {
+    marginVertical: 6,
+  },
+});
