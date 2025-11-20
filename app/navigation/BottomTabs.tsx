@@ -3,7 +3,7 @@ import { useTheme } from "react-native-paper";
 import { Home, MessageSquare, User, Settings } from "lucide-react-native";
 import FeedScreen from "../screens/FeedScreen";
 import type { LucideProps } from "lucide-react-native";
-import MessagesScreen from "../screens/MessagesScreen";
+import MessagesStack from "./MessagesStack";
 import ProfileScreen from "../screens/ProfileScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 
@@ -38,7 +38,7 @@ export default function BottomTabs() {
       />
       <Tab.Screen
         name="Messages"
-        component={MessagesScreen}
+        component={MessagesStack}
         options={{
           tabBarLabel: "Mensajes",
           tabBarIcon: ({ color, size }) => (
