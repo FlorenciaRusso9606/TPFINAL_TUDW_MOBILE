@@ -1,6 +1,8 @@
 {
   "expo": {
     "name": "mobile",
-    "slug": "mobile"
+    "slug": "mobile",
+    "scheme": "bloopapp",
+    "platforms": ["android", "ios"]
   }
 }

@@ -1,19 +1,12 @@
-/*import { Text } from "react-native-paper"
-export default function SettingsScreen(){
-    return(
-        <Text>Hola mundo</Text>
-    )
-}*/
-
 import { useState, useEffect } from "react";
 import { View, ScrollView } from "react-native";
 import { Text, TextInput, Button, Surface } from "react-native-paper";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as ImagePicker from "expo-image-picker";
-import api from "../../api/api";
-import { editProfilSchema, ProfileData } from "../../schemas/editProfile";
-import { useAuth } from "../../context/AuthBase";
+import api from "../../../api/api";
+import { editProfilSchema, ProfileData } from "../../../schemas/editProfile";
+import { useAuth } from "../../../context/AuthBase";
 
 export default function EditProfilePage() {
   const { control, handleSubmit, setValue, watch, formState: { errors, isSubmitting } } = useForm<ProfileData>({

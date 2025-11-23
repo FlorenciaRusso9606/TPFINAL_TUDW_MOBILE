@@ -54,7 +54,7 @@ export default function SidebarDrawer(props: DrawerContentComponentProps) {
       <Divider style={{ marginVertical: 10 }} />
 
       {user && (
-        <>
+        <View>
           <View style={styles.profileRow}>
             <Avatar.Image
               size={50}
@@ -79,7 +79,7 @@ export default function SidebarDrawer(props: DrawerContentComponentProps) {
           >
             Cerrar sesión
           </Button>
-        </>
+        </View>
       )}
     </View>
   );

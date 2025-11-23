@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { View, Image, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet } from "react-native";
 import {
   Text,
   Card,
@@ -95,7 +95,7 @@ export default function PostBody({
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View  style={styles.container}>
       {/* Compartido */}
       {post.shared_post && (
         <Card style={styles.sharedCard}>
@@ -140,7 +140,7 @@ export default function PostBody({
         )}
 
         {translated && (
-          <>
+          <View>
             <IconButton icon={() => <Languages />} />
             <Button
               mode="outlined"
@@ -150,7 +150,7 @@ export default function PostBody({
             >
               Ver original
             </Button>
-          </>
+          </View>
         )}
       </View>
 
@@ -165,7 +165,7 @@ export default function PostBody({
           {msg.text}
         </Text>
       )}
-    </ScrollView>
+    </View>
   );
 }
 

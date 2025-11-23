@@ -56,6 +56,6 @@ export function AuthProviderBase({ children }: { children: ReactNode; onLogout?:
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
+  if (!ctx) throw new Error("useAuth debe ser usado dentro de AuthProvider");
   return ctx;
 }

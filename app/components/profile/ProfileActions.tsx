@@ -159,13 +159,15 @@ export default function ProfileActions({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: 12,
-    marginTop: 8,
-  },
+container: {
+  flexDirection: "row",
+  flexWrap: "wrap",
+  justifyContent: "center",
+  columnGap: 12,
+  rowGap: 12,
+  marginTop: 8,
+},
+
   button: {
     borderRadius: 20,
     minWidth: 130,

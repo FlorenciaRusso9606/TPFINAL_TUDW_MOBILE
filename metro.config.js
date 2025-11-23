@@ -2,7 +2,7 @@ const { getDefaultConfig } = require("expo/metro-config");
 
 const config = getDefaultConfig(__dirname);
 
-// ⚠️ Extender, NO reemplazar
+// Extender, NO reemplazar
 config.resolver.assetExts = [
   ...config.resolver.assetExts,
   "svg",

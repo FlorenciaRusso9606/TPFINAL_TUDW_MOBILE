@@ -1,106 +1,84 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Text, Button, ToggleButton as ToggleGroup } from "react-native-paper";
-
-import PostList from "../components/posts/PostList";
+import { Text, Button } from "react-native-paper";
+import { FlatList, View, StyleSheet } from "react-native";
 import ToggleButton from "../components/ToggleButton";
-import CrearPost from "../components/CrearPost";
+import { usePosts } from "../../hooks/usePosts";
+import PostCard from "../components/posts/PostCard";
 
 export default function FeedScreen() {
-  const [initialMode, setInitialMode] = useState<"all" | "following">("all");
+  const [mode, setMode] = useState<"all" | "following">("all");
   const [hydrated, setHydrated] = useState(false);
 
-  // Cargar modo guardado
+  const { posts, loading, error } = usePosts(mode);
+
+
   useEffect(() => {
     async function loadMode() {
-      try {
-        const saved = await AsyncStorage.getItem("feedMode");
-        if (saved === "all" || saved === "following") {
-          setInitialMode(saved);
-        } else {
-          setInitialMode("all");
-          await AsyncStorage.setItem("feedMode", "all");
-        }
-      } catch {
-        setInitialMode("all");
-      } finally {
-        setHydrated(true);
-      }
+      const saved = await AsyncStorage.getItem("feedMode");
+      if (saved === "all" || saved === "following") setMode(saved);
+      setHydrated(true);
     }
     loadMode();
   }, []);
 
-  // Guardar cambios
   useEffect(() => {
-    if (hydrated) {
-      AsyncStorage.setItem("feedMode", initialMode);
-    }
-  }, [initialMode, hydrated]);
+    if (hydrated) AsyncStorage.setItem("feedMode", mode);
+  }, [mode, hydrated]);
 
   if (!hydrated) return null;
 
+
   return (
-    <View style={styles.container}>
-      {/* Toggle de tema */}
+    <View style={{ flex: 1, paddingTop: 48, paddingHorizontal: 16 }}>
       <View style={styles.topRight}>
         <ToggleButton />
       </View>
 
-      <Text variant="headlineMedium" style={styles.title}>
-        Mi Feed
-      </Text>
+      <Text variant="headlineMedium" style={styles.title}>Mi Feed</Text>
 
-      <View style={styles.content}>
-        {/* Selector de feed */}
-        <View style={styles.toggleContainer}>
-          <View style={styles.buttonGroup}>
-            <Button
-              mode={initialMode === "all" ? "contained" : "outlined"}
-              onPress={() => setInitialMode("all")}
-            >
-              Todos
-            </Button>
+      <View style={styles.toggleContainer}>
+        <View style={styles.buttonGroup}>
+          <Button
+            mode={mode === "all" ? "contained" : "outlined"}
+            onPress={() => setMode("all")}
+          >
+            Todos
+          </Button>
 
-            <Button
-              mode={initialMode === "following" ? "contained" : "outlined"}
-              onPress={() => setInitialMode("following")}
-            >
-              Seguidos
-            </Button>
-          </View>
-
-          <CrearPost />
+          <Button
+            mode={mode === "following" ? "contained" : "outlined"}
+            onPress={() => setMode("following")}
+          >
+            Seguidos
+          </Button>
         </View>
-
-        {/* Lista de posts */}
-        <PostList initialMode={initialMode} />
       </View>
+
+  
+      <FlatList
+        data={posts}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <PostCard post={item} />}
+        contentContainerStyle={{ paddingBottom: 40 }}
+        ListEmptyComponent={<Text>No hay posts todavía</Text>}
+        ListFooterComponent={loading ? <Text>Cargando...</Text> : null}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 48,
-    paddingHorizontal: 16,
-    alignItems: "center",
-  },
   topRight: {
     position: "absolute",
     top: 16,
     right: 16,
+    zIndex: 10,
   },
   title: {
     marginBottom: 24,
     textAlign: "center",
     fontWeight: "600",
-  },
-  content: {
-    width: "100%",
-    maxWidth: 800,
-    gap: 24,
   },
   toggleContainer: {
     width: "100%",

@@ -25,8 +25,9 @@ export default function BlockStatusMessage({ blockStatus, profile, onUnblock }: 
             Bloqueo mutuo
           </Text>
           <Text>
-            Tú y <Text style={{ fontWeight: "bold" }}>{profile.username}</Text> se tienen bloqueados.
-          </Text>
+  Tú y <Text style={{ fontWeight: "bold" }}>{profile.username}</Text> se tienen bloqueados.
+</Text>
+
           <Button mode="contained" onPress={onUnblock} style={{ marginTop: 8 }}>
             Desbloquear
           </Button>

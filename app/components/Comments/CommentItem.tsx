@@ -134,7 +134,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
           />
 
           {user?.id === comment.author_id && (
-            <>
+            <View>
               <IconButton
                 icon={() => <Edit2 size={16} color={theme.colors.primary} {...({} as LucideProps)} />}
                 size={16}
@@ -145,7 +145,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                 size={16}
                 onPress={handleDelete}
               />
-            </>
+            </View>
           )}
         </View>
 

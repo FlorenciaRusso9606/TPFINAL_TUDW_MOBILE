@@ -4,22 +4,18 @@ import { useAuth } from "../../context/AuthBase";
 import { NavigationContainer } from "@react-navigation/native";
 import  AppStack  from "./AppStack";
 import { AuthStack } from "./AuthStack";
+import { useGoogleAuthRedirect } from "../../hooks/useGoogleAuthRedirect";
 
 export const AuthNavigation = () => {
+  useGoogleAuthRedirect();
+
   const { user, loading } = useAuth();
 
-  useEffect(() => {
-    console.log("🧭 AuthNavigation:", { loading, user });
-  }, [loading, user]);
-
-  if (loading) {
-    return <Text>Cargando usuario...</Text>;
-  }
+  if (loading) return <Text>Cargando usuario...</Text>;
 
   return (
     <NavigationContainer>
-      {user ? <AppStack /> : (
-        <AuthStack />)}
+      {user ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };

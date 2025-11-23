@@ -49,7 +49,7 @@ export default function PostMedia({ medias }: { medias: Media[] }) {
     return 2;
   };
   return (
-    <>
+    <View>
       <View style={[
           styles.grid,
           { backgroundColor: theme.colors.background },
@@ -129,7 +129,7 @@ export default function PostMedia({ medias }: { medias: Media[] }) {
           </View>
         </ModalBase>
       )}
-    </>
+    </View>
   );
 }
 }

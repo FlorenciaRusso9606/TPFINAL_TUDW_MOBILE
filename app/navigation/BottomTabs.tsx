@@ -1,33 +1,36 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "react-native-paper";
-import { Home, MessageSquare, User, Settings } from "lucide-react-native";
+import { Home, MessageSquare, Settings, Plus, Search , User} from "lucide-react-native";
 import FeedScreen from "../screens/FeedScreen";
-import type { LucideProps } from "lucide-react-native";
 import MessagesScreen from "../screens/MessagesScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import SettingsScreen from "../screens/SettingsScreen";
-
+import CreatePostScreen from "../screens/CreatePostScreen";
+import SearchScreen from "../screens/SearchScreen"; 
+import ProfileStack from "app/navigation/ProfileStack";
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabs() {
   const theme = useTheme();
 
-  const tabProps: any = {
-    screenOptions: {
-      headerShown: false,
-      tabBarActiveTintColor: theme.colors.primary,
-      tabBarInactiveTintColor: "#999",
-      tabBarStyle: {
-        backgroundColor: theme.colors.surface,
-        borderTopWidth: 0.5,
-        borderTopColor: "#ccc",
-        height: 60,
-      },
-    },
-  };
-
   return (
-    <Tab.Navigator {...tabProps}>
+<Tab.Navigator
+  screenOptions={{
+    tabBarShowLabel: false, 
+    tabBarActiveTintColor: theme.colors.primary,
+    tabBarInactiveTintColor: "#999",
+    tabBarStyle: {
+      backgroundColor: theme.colors.surface,
+      borderTopWidth: 0.5,
+      borderTopColor: "#ccc",
+      height: 85,        
+      paddingBottom: 20, 
+      paddingTop: 5,
+    },
+  }}
+>
+
+
+
+      {/* INICIO */}
       <Tab.Screen
         name="Feed"
         component={FeedScreen}
@@ -36,6 +39,33 @@ export default function BottomTabs() {
           tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
         }}
       />
+
+      {/* BUSCAR */}
+      <Tab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          tabBarLabel: "Buscar",
+          tabBarIcon: ({ color, size }) => <Search size={size} color={color} />,
+        }}
+      />
+
+      {/* CREAR POST */}
+      <Tab.Screen
+        name="CreatePost"
+        component={CreatePostScreen}
+        options={{
+          tabBarLabel: "",
+          tabBarIcon: () => (
+            <Plus size={38} color={theme.colors.primary} />
+          ),
+          tabBarItemStyle: {
+            marginBottom: 10,
+          },
+        }}
+      />
+
+      {/* MENSAJES */}
       <Tab.Screen
         name="Messages"
         component={MessagesScreen}
@@ -46,24 +76,16 @@ export default function BottomTabs() {
           ),
         }}
       />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarLabel: "Perfil",
-          tabBarIcon: ({ color, size }) => <User size={size} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          tabBarLabel: "Ajustes",
-          tabBarIcon: ({ color, size }) => (
-            <Settings size={size} color={color} />
-          ),
-        }}
-      />
+
+      {/* PERFIL  */}
+ <Tab.Screen
+  name="ProfileStack"
+  component={ProfileStack}
+  options={{
+    headerShown: false,
+    tabBarIcon: ({ color, size }) => <User size={size} color={color} />,
+  }}
+/>
     </Tab.Navigator>
   );
 }

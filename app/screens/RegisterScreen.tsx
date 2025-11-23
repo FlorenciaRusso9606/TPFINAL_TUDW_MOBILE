@@ -42,7 +42,7 @@ export default function Register() {
             control={control}
             name="email"
             render={({ field: { onChange, onBlur, value } }: { field: { onChange: (value: string) => void; onBlur: () => void; value: string } }) => (
-              <>
+              <View>
                 <TextInput
                   label="Correo electrónico"
                   mode="outlined"
@@ -58,7 +58,7 @@ export default function Register() {
                 <HelperText type="error" visible={!!errors.email}>
                   {errors.email?.message}
                 </HelperText>
-              </>
+              </View>
             )}
           />
 
@@ -67,7 +67,7 @@ export default function Register() {
             control={control}
             name="username"
              render={({ field: { onChange, onBlur, value } }: { field: { onChange: (value: string) => void; onBlur: () => void; value: string } }) => (
-              <>
+              <View>
                 <TextInput
                   label="Nombre de usuario"
                   mode="outlined"
@@ -82,7 +82,7 @@ export default function Register() {
                 <HelperText type="error" visible={!!errors.username}>
                   {errors.username?.message}
                 </HelperText>
-              </>
+              </View>
             )}
           />
 
@@ -91,7 +91,7 @@ export default function Register() {
             control={control}
             name="password"
              render={({ field: { onChange, onBlur, value } }: { field: { onChange: (value: string) => void; onBlur: () => void; value: string } }) => (
-              <>
+              <View>
                 <TextInput
                   label="Contraseña"
                   mode="outlined"
@@ -106,7 +106,7 @@ export default function Register() {
                 <HelperText type="error" visible={!!errors.password}>
                   {errors.password?.message}
                 </HelperText>
-              </>
+              </View>
             )}
           />
 

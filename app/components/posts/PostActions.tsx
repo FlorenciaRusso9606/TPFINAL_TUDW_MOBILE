@@ -36,7 +36,7 @@ export default function PostActions({
         }
       >
         {isOwn ? (
-          <>
+          <View>
             <Menu.Item
               onPress={() => {
                 onEdit();
@@ -54,7 +54,7 @@ export default function PostActions({
               leadingIcon={() => <X size={20} />}
               disabled={loading}
             />
-          </>
+          </View>
         ) : (
           <Menu.Item
             onPress={() => {

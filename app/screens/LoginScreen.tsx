@@ -51,7 +51,7 @@ export default function LoginScreen() {
             control={control}
             name="identifier"
            render={({ field: { onChange, onBlur, value } }: { field: { onChange: (value: string) => void; onBlur: () => void; value: string } }) => (
-              <>
+              <View>
                 <TextInput
                   label="Email o usuario"
                   mode="outlined"
@@ -66,7 +66,7 @@ export default function LoginScreen() {
                 <HelperText type="error" visible={!!errors.identifier}>
                   {errors.identifier?.message}
                 </HelperText>
-              </>
+              </View>
             )}
           />
 
@@ -75,7 +75,7 @@ export default function LoginScreen() {
             control={control}
             name="password"
              render={({ field: { onChange, onBlur, value } }: { field: { onChange: (value: string) => void; onBlur: () => void; value: string } }) => (
-              <>
+              <View>
                 <TextInput
                   label="Contraseña"
                   mode="outlined"
@@ -90,7 +90,7 @@ export default function LoginScreen() {
                 <HelperText type="error" visible={!!errors.password}>
                   {errors.password?.message}
                 </HelperText>
-              </>
+              </View>
             )}
           />
 
