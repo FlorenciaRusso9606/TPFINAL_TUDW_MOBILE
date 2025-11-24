@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { View, TextInput, Button } from 'react-native';
 
 export default function MessageInput({ onSend }: { onSend: (text: string) => void }) {

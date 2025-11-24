@@ -1,49 +1,67 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { View, Image, ScrollView } from "react-native";
 import { Card, TextInput, Button, Switch, Text, ActivityIndicator } from "react-native-paper";
-import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "../../context/AuthBase";
 import { fetchWeatherByCity } from "../../services/weatherService";
 import api from "../../api/api";
 
+type MediaFile = {
+  uri: string;
+  name: string;
+  type: string;
+  previewType: "image" | "video";
+};
+
 export default function CreatePostScreen({ navigation }: any) {
   const [contenido, setContenido] = useState("");
-
-  const [files, setFiles] = useState<DocumentPicker.DocumentPickerSuccessResult[]>([]);
-  const [previews, setPreviews] = useState<string[]>([]);
-
+  const [files, setFiles] = useState<MediaFile[]>([]);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] =
-    useState<{ type: "success" | "error" | null; text: string | null }>({
-      type: null,
-      text: null,
-    });
+
+  const [message, setMessage] = useState<{
+    type: "success" | "error" | null;
+    text: string | null;
+  }>({ type: null, text: null });
 
   const [attachWeather, setAttachWeather] = useState(false);
   const [weatherData, setWeatherData] = useState<any | null>(null);
 
   const { user } = useAuth();
 
-  // TYPE GUARD
-  function isSuccessResult(
-    res: DocumentPicker.DocumentPickerResult
-  ): res is DocumentPicker.DocumentPickerSuccessResult {
-    return res.type === "success";
+  // PICK IMAGEN O VIDEO
+  const pickImageOrVideo = async () => {
+  //  Pedir permisos
+  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (status !== "granted") {
+    alert("Necesitas otorgar permisos para acceder a la galería.");
+    return;
   }
 
-  // PICK ARCHIVO
-  const handleFilePick = async () => {
-    const res = await DocumentPicker.getDocumentAsync({
-      type: "*/*",
-      multiple: false,
-    });
+  //  Abrir picker
+const res = await ImagePicker.launchImageLibraryAsync({
+  mediaTypes: ["images", "videos"],  // ← usa strings
+  quality: 1,
+});
 
-    if (isSuccessResult(res)) {
-      const updated = [...files, res].slice(0, 4);
-      setFiles(updated);
-      setPreviews(updated.map((f) => f.uri));
-    }
-  };
+
+  if (!res.canceled) {
+    const asset = res.assets[0];
+
+    const previewType = asset.type === "video" ? "video" : "image";
+
+    const newFile: MediaFile = {
+      uri: asset.uri,
+      name: asset.fileName ?? `media_${Date.now()}`,
+      type:
+        asset.mimeType ??
+        (asset.type === "video" ? "video/mp4" : "image/jpeg"),
+      previewType,
+    };
+
+    setFiles((prev) => [...prev, newFile].slice(0, 4));
+  }
+};
+
 
   // FETCH WEATHER
   useEffect(() => {
@@ -56,14 +74,14 @@ export default function CreatePostScreen({ navigation }: any) {
         const w = await fetchWeatherByCity(user.city, (user as any).country_iso);
         if (mounted) setWeatherData(w);
       } catch (err) {
-        console.warn("No se pudo obtener clima", err);
+        console.error("Error clima", err);
       }
     })();
 
     return () => {
       mounted = false;
     };
-  }, [attachWeather, user?.city, user?.country_iso]);
+  }, [attachWeather, user?.city]);
 
   // SUBMIT
   const handleSubmit = async () => {
@@ -71,39 +89,47 @@ export default function CreatePostScreen({ navigation }: any) {
       return setMessage({ type: "error", text: "Debes iniciar sesión" });
     }
 
+    if (!contenido.trim() && files.length === 0) {
+      return setMessage({
+        type: "error",
+        text: "El post no puede estar vacío",
+      });
+    }
+
     setLoading(true);
 
     try {
       const formData = new FormData();
+
       formData.append("text", contenido);
 
       if (attachWeather && weatherData) {
         formData.append("weather", JSON.stringify(weatherData));
       }
 
-      for (const f of files) {
+      // ARCHIVOS
+      files.forEach((f) => {
         formData.append("files", {
-          uri: f.uri,
+          uri: f.uri.startsWith("file://") ? f.uri : "file://" + f.uri,
           name: f.name,
-          type: f.mimeType ?? "application/octet-stream",
+          type: f.type,
         } as any);
-      }
+      });
 
-      const res = await api.post("/posts", formData, {
+
+      await api.post("/posts", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       // limpiar
       setContenido("");
       setFiles([]);
-      setPreviews([]);
 
       setMessage({ type: "success", text: "Post creado correctamente" });
 
-      // volver al feed
       navigation.navigate("Feed");
-
     } catch (err: any) {
+      console.error(err);
       setMessage({
         type: "error",
         text: err?.message || "Error al crear el post",
@@ -122,7 +148,7 @@ export default function CreatePostScreen({ navigation }: any) {
           </Text>
 
           <TextInput
-            label="Contenido / Descripción"
+            label="Contenido"
             value={contenido}
             onChangeText={setContenido}
             multiline
@@ -130,24 +156,28 @@ export default function CreatePostScreen({ navigation }: any) {
             style={{ marginBottom: 12 }}
           />
 
-          <Button mode="outlined" onPress={handleFilePick} style={{ marginBottom: 12 }}>
-            Adjuntar archivos (máx 4)
+          {/* BOTÓN PICKER */}
+          <Button
+            mode="outlined"
+            onPress={pickImageOrVideo}
+            style={{ marginBottom: 12 }}
+          >
+            Elegir imagen o video (máx 4)
           </Button>
 
+          {/* PREVIEWS */}
           <ScrollView horizontal style={{ marginBottom: 12 }}>
-            {previews.map((p, idx) => (
+            {files.map((f, idx) => (
               <View key={idx} style={{ marginRight: 12 }}>
                 <Image
-                  source={{ uri: p }}
+                  source={{ uri: f.uri }}
                   style={{ width: 90, height: 90, borderRadius: 8 }}
                 />
                 <Button
                   compact
-                  onPress={() => {
-                    const nf = files.filter((_, i) => i !== idx);
-                    setFiles(nf);
-                    setPreviews(nf.map((f) => f.uri));
-                  }}
+                  onPress={() =>
+                    setFiles((p) => p.filter((_, i) => i !== idx))
+                  }
                 >
                   Quitar
                 </Button>
@@ -155,15 +185,16 @@ export default function CreatePostScreen({ navigation }: any) {
             ))}
           </ScrollView>
 
+          {/* WEATHER */}
           <View
             style={{
               flexDirection: "row",
-              alignItems: "center",
               justifyContent: "space-between",
               marginBottom: 12,
+              alignItems: "center",
             }}
           >
-            <Text>Adjuntar clima actual</Text>
+            <Text>Adjuntar clima</Text>
             <Switch value={attachWeather} onValueChange={setAttachWeather} />
           </View>
 
@@ -188,7 +219,6 @@ export default function CreatePostScreen({ navigation }: any) {
             onPress={() => {
               setContenido("");
               setFiles([]);
-              setPreviews([]);
             }}
           >
             Limpiar

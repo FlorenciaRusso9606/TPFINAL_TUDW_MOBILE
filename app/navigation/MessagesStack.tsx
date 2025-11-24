@@ -1,8 +1,7 @@
-import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ChatList from '../chat/screens/ChatList';
-import ChatScreen from '../chat/screens/ChatScreen';
-
+import ChatList from '../screens/messages/ChatList';
+import ChatScreen from '../screens/messages/ChatScreen';
+import SearchConversation from "../screens/messages/SearchConversation"
 const Stack = createNativeStackNavigator();
 
 export default function MessagesStack() {
@@ -10,6 +9,12 @@ export default function MessagesStack() {
     <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="ChatList" component={ChatList} options={{ title: 'Mensajes' }} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} options={{ title: 'Chat' }} />
+<Stack.Screen 
+  name="SearchConversation" 
+  component={SearchConversation} 
+  options={{ title: "Buscar usuario" }} 
+/>
+
     </Stack.Navigator>
   );
 }

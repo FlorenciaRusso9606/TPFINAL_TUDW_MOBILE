@@ -2,13 +2,10 @@
   "expo": {
     "name": "mobile",
     "slug": "mobile",
-<<<<<<< HEAD
     "scheme": "bloopapp",
-    "platforms": ["android", "ios"]
-=======
+    "platforms": ["android", "ios"],
     "android": {
       "package": "com.anonymous.mobile"
     }
->>>>>>> f720799bd5fe1c8be2e10d81d43500a93e38c116
   }
 }

@@ -1,5 +1,5 @@
 import  { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, ActivityIndicator, ScrollView, TouchableOpacity } from "react-native";
 import api from "../../../api/api";
 import { useRoute } from "@react-navigation/native";
 import { useAuth } from "../../../context/AuthBase";
@@ -7,11 +7,14 @@ import UserProfileHeader from "../../components/profile/ProfileHeader";
 import BlockStatusMessageMobile from "../../components/profile/BlockStatusMessage";
 import PostList from "../../components/posts/PostList";
 import { User } from "types/user";
+import { useNavigation } from "@react-navigation/native";
+import { ThemeContext } from "@react-navigation/native";
 export default function UserProfileScreen() {
 const route = useRoute();
 const { user } = useAuth();
 
 const params = route.params as any;
+  const navigation = useNavigation();
 
 const username =
   params?.fromMyProfile
@@ -85,11 +88,11 @@ const [profile, setProfile] = useState<User | null>(null);
         followStatus={followStatus}
         setFollowStatus={setFollowStatus}
       />
-
+     
       <BlockStatusMessageMobile
   blockStatus={blockStatus}
   profile={profile}
-  onUnblock={() => api.delete(`/blocks/${profile.id}`)} // pequeño fix
+  onUnblock={() => api.delete(`/blocks/${profile.id}`)} 
 />
 
 

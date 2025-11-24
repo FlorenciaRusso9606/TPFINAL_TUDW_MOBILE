@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { useEffect, useState } from "react";
+import { View, StyleSheet, Image,TouchableOpacity  } from "react-native";
 import { Text, Avatar, Divider, useTheme } from "react-native-paper";
+import { Settings } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import api from "../../../api/api";
 import ProfileActions from "./ProfileActions";
 import { User, BlockStatus, FollowStatus } from "../../../types/user";
-
+import { useNavigation } from "@react-navigation/core";
 interface Props {
   profile: User;
   isOwnProfile: boolean;
@@ -26,7 +27,7 @@ export default function ProfileHeader({
 }: Props) {
   const theme = useTheme();
   const [flag, setFlag] = useState<string | null>(null);
-
+  const navigation = useNavigation()
   useEffect(() => {
     async function fetchFlag() {
       if (!profile.country_iso) return;
@@ -42,10 +43,10 @@ export default function ProfileHeader({
 
   return (
     <View style={styles.container}>
-      {/* Header con gradiente */}
+      {/* Header */}
       <LinearGradient
         colors={[theme.colors.primary, theme.colors.primaryContainer]}
-        style={styles.headerGradient}
+       
       />
 
       {/* Avatar */}
@@ -67,15 +68,45 @@ export default function ProfileHeader({
 
       {/* Info principal */}
       <View style={styles.infoContainer}>
-        <Text variant="headlineSmall" style={styles.username}>
-          {profile.username}
-        </Text>
-
-        {profile.displayname ? (
+    <View style={{ padding: 16, flexDirection: "row", alignItems: "center" }}>
+      <View style={{flexDirection: "column"}}>  
+           <Text variant="headlineSmall" style={styles.username}>{profile.username}</Text>
+        
+         {profile.displayname ? (
           <Text variant="titleSmall" style={{ color: theme.colors.onSurfaceVariant }}>
             {profile.displayname}
           </Text>
+         
         ) : null}
+         </View>     
+     
+       
+         {isOwnProfile && (
+        <TouchableOpacity
+          onPress={() => navigation.navigate("SettingsHome" as never) }
+          style={{ padding: 6 }}
+        >
+          <Settings size={26} color="#555" />
+        </TouchableOpacity>
+      )}
+
+    </View>
+
+     {isOwnProfile && (
+  <TouchableOpacity
+    onPress={() => navigation.navigate("EditProfilePage" as never)}
+    style={{
+      backgroundColor: "#eee",
+      paddingVertical: 6,
+      paddingHorizontal: 12,
+      borderRadius: 8,
+      marginTop: 8
+    }}
+  >
+    <Text style={{ fontSize: 14 }}>Editar perfil</Text>
+  </TouchableOpacity>
+)}
+
 
         <Text
           variant="bodyMedium"

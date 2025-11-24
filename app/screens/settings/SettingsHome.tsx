@@ -36,19 +36,19 @@ export default function SettingsHome() {
         <List.Item
           title="Editar perfil"
           left={() => <User size={22} style={{ marginTop: 8 }} />}
-          onPress={() => navigation.navigate("EditProfile" as never)}
+          onPress={() => navigation.navigate("EditProfilePage" as never)}
         />
 
         <List.Item
           title="Apariencia"
           left={() => <Palette size={22} style={{ marginTop: 8 }} />}
-          onPress={() => navigation.navigate("Appearance" as never)}
+          onPress={() => navigation.navigate("AppearancePage" as never)}
         />
 
         <List.Item
           title="Actividad"
           left={() => <Activity size={22} style={{ marginTop: 8 }} />}
-          onPress={() => navigation.navigate("Activity" as never)}
+          onPress={() => navigation.navigate("ActivityPage" as never)}
         />
 
         <List.Item

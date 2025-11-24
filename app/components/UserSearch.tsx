@@ -65,7 +65,7 @@ const navigation = useNavigation<NavigationProp<RootStackParamList>>();
         mode="outlined"
         style={{ marginBottom: 8 }}
       />
-
+      
       {results.length > 0 && (
         <Card style={{ maxHeight: 300, position: "absolute", top: 60, left: 0, right: 0, zIndex: 10 }}>
           <FlatList
@@ -74,6 +74,7 @@ const navigation = useNavigation<NavigationProp<RootStackParamList>>();
             renderItem={renderItem}
           />
         </Card>
+        
       )}
     </View>
   );
