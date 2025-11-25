@@ -85,7 +85,29 @@ export default function Register() {
               </View>
             )}
           />
-
+           {/* Displayname */}
+<Controller
+  control={control}
+  name="displayname"
+  render={({ field: { onChange, onBlur, value } }) => (
+    <View>
+      <TextInput
+        label="Nombre a mostrar"
+        mode="outlined"
+        onBlur={onBlur}
+        onChangeText={onChange}
+        value={value}
+        autoCapitalize="words"
+        left={<TextInput.Icon icon="account-circle" />}
+        error={!!errors.displayname}
+        style={{ marginBottom: 4 }}
+      />
+      <HelperText type="error" visible={!!errors.displayname}>
+        {errors.displayname?.message}
+      </HelperText>
+    </View>
+  )}
+/>
           {/* Password */}
           <Controller
             control={control}

@@ -7,31 +7,41 @@ export const darkTheme = {
   mode: "dark" as const,
   colors: {
     ...PaperDark.colors,
-    primary: "#90caf9",
-    onPrimary: "#000000",
-    primaryContainer: "#0d47a1",
-    secondary: "#ce93d8",
+
+    
+    primary: "#4C6FFF",
+    onPrimary: "#0B1020",
+
+    secondary: "#8C82FF",
     onSecondary: "#000000",
-    background: "#121212",
-    surface: "#1e1e1e",
-    onSurface: "#ffffff",
-    outline: "#333333",
-    error: "#ef5350",
-    success: "#66bb6a",
-    warning: "#ffb300",
-    textPrimary: "#ffffff",
-    textSecondary: "#bbbbbb",
+
+    background: "#071226",
+    surface: "#071226",
+
+    text: "#E6EEF6",
+    textSecondary: "#94A3B8",
+
+    border: "#192132",
+
+    accent: "#26BFAA",
+    success: "#34D399",
+    warning: "#FBBF24",
+    danger: "#FF6B6B",
+    info: "#60A5FA",
   },
+
   components: {
     ...baseTheme.components,
+
     input: {
       ...baseTheme.components.inputBase,
-      backgroundColor: "#1e1e1e",
-      borderColor: "#333333",
+      backgroundColor: "#071226",
+      borderColor: "#192132",
     },
+
     button: {
       ...baseTheme.components.buttonBase,
-      backgroundColor: "#90caf9",
+      backgroundColor: "#4C6FFF",
     },
   },
-}as const; 
+};

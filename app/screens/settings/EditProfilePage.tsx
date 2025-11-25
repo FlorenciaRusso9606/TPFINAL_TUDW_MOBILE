@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { View, ScrollView } from "react-native";
-import { Text, TextInput, Button, Surface } from "react-native-paper";
+import { Text, TextInput, Button, Surface, Provider } from "react-native-paper";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as ImagePicker from "expo-image-picker";
 import api from "../../../api/api";
 import { editProfilSchema, ProfileData } from "../../../schemas/editProfile";
 import { useAuth } from "../../../context/AuthBase";
-
+import SelectInput from "app/components/SelectInput";
 export default function EditProfilePage() {
   const { control, handleSubmit, setValue, watch, formState: { errors, isSubmitting } } = useForm<ProfileData>({
     resolver: zodResolver(editProfilSchema),
@@ -28,7 +28,8 @@ export default function EditProfilePage() {
   const bioValue = watch("bio") || "";
   const bioLength = bioValue.length;
   const maxBioLength = 160;
-
+const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [countries, setCountries] = useState<{ label: string; value: string }[]>([]);
   const [cities, setCities] = useState<{ label: string; value: string }[]>([]);
 
@@ -48,17 +49,19 @@ export default function EditProfilePage() {
   }, []);
 
   // Fetch cities teniendo el país
-  useEffect(() => {
-    if (!countryIso) return setCities([]);
-    (async () => {
-      try {
-        const res = await api.get(`/countries/${countryIso}/city`);
-        setCities(res.data.map((c: any) => ({ label: c.name, value: c.name })));
-      } catch {
-        setCities([]);
-      }
-    })();
-  }, [countryIso]);
+ useEffect(() => {
+  (async () => {
+    if (!countryIso) return;
+
+    try {
+      const res = await api.get(`/countries/${countryIso}/city`);
+      setCities(res.data.map((c: any) => ({ label: c.name, value: c.name })));
+    } catch (e) {
+      setCities([]);
+    }
+  })();
+}, [countryIso]);
+
 
   // Fetch user
   useEffect(() => {
@@ -117,108 +120,122 @@ export default function EditProfilePage() {
       console.error("Error updating profile");
     }
   };
+useEffect(() => {
+  console.log("CIUDADES ACTUALIZADAS:", cities);
+}, [cities]);
 
   if (loading) return <Text>Cargando perfil...</Text>;
 
   return (
-    <ScrollView style={{ flex: 1, padding: 16 }}>
+    <Provider>
+      <ScrollView style={{ flex: 1, padding: 16 }}>
       <Surface style={{ padding: 16, borderRadius: 8, elevation: 4 }}>
-        <Text variant="headlineMedium" style={{ marginBottom: 16 }}>Editar Perfil</Text>
 
-        <Controller
-          name="country_iso"
-          control={control}
-          render={({ field }) => (
-            <TextInput
-              label="País"
-              value={field.value}
-              onChangeText={(text) => {
-                field.onChange(text);
-                setValue("city", "");
-              }}
-              style={{ marginBottom: 12 }}
-            />
-          )}
+  <>
+    <Text variant="headlineMedium" style={{ marginBottom: 16 }}>
+      Editar Perfil
+    </Text>
+
+    <Controller
+      name="country_iso"
+      control={control}
+      render={({ field }) => (
+        <SelectInput
+          label="País"
+          value={field.value}
+          onChange={(val) => {
+            field.onChange(val);
+            setValue("city", "");
+          }}
+          options={countries}
         />
+      )}
+    />
 
-        <Controller
-          name="city"
-          control={control}
-          render={({ field }) => (
-            <TextInput
-              label="Ciudad"
-              value={field.value}
-              onChangeText={field.onChange}
-              style={{ marginBottom: 12 }}
-            />
-          )}
+    <Controller
+      name="city"
+      control={control}
+      render={({ field }) => (
+        <SelectInput
+          label="Ciudad"
+          value={field.value}
+          onChange={field.onChange}
+          options={cities}
+          disabled={!countryIso}
         />
+      )}
+    />
 
-        <Controller
-          name="displayname"
-          control={control}
-          render={({ field }) => (
-            <TextInput
-              label="Nombre de Usuario"
-              value={field.value}
-              onChangeText={field.onChange}
-              error={!!errors.displayname}
-              style={{ marginBottom: 12 }}
-            />
-          )}
+    <Controller
+      name="displayname"
+      control={control}
+      render={({ field }) => (
+        <TextInput
+          label="Nombre de Usuario"
+          value={field.value}
+          onChangeText={field.onChange}
+          error={!!errors.displayname}
+          style={{ marginBottom: 12 }}
         />
+      )}
+    />
 
-        <Controller
-          name="bio"
-          control={control}
-          render={({ field }) => (
-            <TextInput
-              label="Bio"
-              value={field.value}
-              onChangeText={field.onChange}
-              multiline
-              style={{ marginBottom: 12 }}
-            />
-          )}
+    <Controller
+      name="bio"
+      control={control}
+      render={({ field }) => (
+        <TextInput
+          label="Bio"
+          value={field.value}
+          onChangeText={field.onChange}
+          multiline
+          style={{ marginBottom: 12 }}
         />
+      )}
+    />
 
-        <Controller
-          name="password"
-          control={control}
-          render={({ field }) => (
-            <TextInput
-              label="Contraseña anterior"
-              secureTextEntry
-              value={field.value}
-              onChangeText={field.onChange}
-              style={{ marginBottom: 12 }}
-            />
-          )}
+    <Controller
+      name="password"
+      control={control}
+      render={({ field }) => (
+        <TextInput
+          label="Contraseña anterior"
+          secureTextEntry
+          value={field.value}
+          onChangeText={field.onChange}
+          style={{ marginBottom: 12 }}
         />
+      )}
+    />
 
-        <Controller
-          name="new_password"
-          control={control}
-          render={({ field }) => (
-            <TextInput
-              label="Nueva contraseña"
-              secureTextEntry
-              value={field.value}
-              onChangeText={field.onChange}
-              style={{ marginBottom: 12 }}
-            />
-          )}
+    <Controller
+      name="new_password"
+      control={control}
+      render={({ field }) => (
+        <TextInput
+          label="Nueva contraseña"
+          secureTextEntry
+          value={field.value}
+          onChangeText={field.onChange}
+          style={{ marginBottom: 12 }}
         />
+      )}
+    />
 
-        <Button mode="contained" onPress={pickImage} style={{ marginBottom: 12 }}>
-          Elegir foto de perfil
-        </Button>
+    <Button mode="contained" onPress={pickImage} style={{ marginBottom: 12 }}>
+      Elegir foto de perfil
+    </Button>
 
-        <Button mode="contained" onPress={handleSubmit(onSubmit)} disabled={isSubmitting}>
-          {isSubmitting ? "Guardando..." : "Guardar"}
-        </Button>
-      </Surface>
+    <Button mode="contained" onPress={handleSubmit(onSubmit)} disabled={isSubmitting}>
+      {isSubmitting ? "Guardando..." : "Guardar"}
+    </Button>
+  </>
+
+</Surface>
+
     </ScrollView>
+    </Provider>
+    
   );
 }
 

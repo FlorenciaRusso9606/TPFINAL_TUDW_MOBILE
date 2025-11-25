@@ -2,7 +2,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "react-native-paper";
 import { Home, MessageSquare, Settings, Plus, Search , User} from "lucide-react-native";
 import FeedScreen from "../screens/FeedScreen";
-import MessagesScreen from "../screens/MessagesScreen";
 import CreatePostScreen from "../screens/CreatePostScreen";
 import SearchScreen from "../screens/SearchScreen"; 
 import ProfileStack from "app/navigation/ProfileStack";

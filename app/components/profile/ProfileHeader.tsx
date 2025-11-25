@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Image,TouchableOpacity  } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Text, Avatar, Divider, useTheme } from "react-native-paper";
 import { Settings } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -7,6 +7,7 @@ import api from "../../../api/api";
 import ProfileActions from "./ProfileActions";
 import { User, BlockStatus, FollowStatus } from "../../../types/user";
 import { useNavigation } from "@react-navigation/core";
+
 interface Props {
   profile: User;
   isOwnProfile: boolean;
@@ -14,7 +15,6 @@ interface Props {
   setBlockStatus: (status: BlockStatus) => void;
   followStatus: FollowStatus;
   setFollowStatus: (status: FollowStatus) => void;
-  onFollowChange?: () => void;
 }
 
 export default function ProfileHeader({
@@ -27,7 +27,8 @@ export default function ProfileHeader({
 }: Props) {
   const theme = useTheme();
   const [flag, setFlag] = useState<string | null>(null);
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+
   useEffect(() => {
     async function fetchFlag() {
       if (!profile.country_iso) return;
@@ -43,13 +44,24 @@ export default function ProfileHeader({
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      
+      {/* HEADER CON DEGRADADO */}
       <LinearGradient
         colors={[theme.colors.primary, theme.colors.primaryContainer]}
-       
+        style={styles.headerGradient}
       />
 
-      {/* Avatar */}
+      {/* BOTÓN DE AJUSTES (si es tu perfil) */}
+      {isOwnProfile && (
+        <TouchableOpacity
+          onPress={() => navigation.navigate("SettingsHome" as never)}
+          style={styles.settingsButton}
+        >
+          <Settings size={24} color="#fff" />
+        </TouchableOpacity>
+      )}
+
+      {/* AVATAR */}
       <View style={styles.avatarContainer}>
         {profile.profile_picture_url ? (
           <Avatar.Image
@@ -66,56 +78,38 @@ export default function ProfileHeader({
         )}
       </View>
 
-      {/* Info principal */}
+      {/* INFORMACIÓN */}
       <View style={styles.infoContainer}>
-    <View style={{ padding: 16, flexDirection: "row", alignItems: "center" }}>
-      <View style={{flexDirection: "column"}}>  
-           <Text variant="headlineSmall" style={styles.username}>{profile.username}</Text>
-        
-         {profile.displayname ? (
-          <Text variant="titleSmall" style={{ color: theme.colors.onSurfaceVariant }}>
+        <Text variant="headlineSmall" style={styles.username}>
+          {profile.username}
+        </Text>
+
+        {profile.displayname && (
+          <Text variant="titleSmall" style={styles.displayname}>
             {profile.displayname}
           </Text>
-         
-        ) : null}
-         </View>     
-     
-       
-         {isOwnProfile && (
-        <TouchableOpacity
-          onPress={() => navigation.navigate("SettingsHome" as never) }
-          style={{ padding: 6 }}
-        >
-          <Settings size={26} color="#555" />
-        </TouchableOpacity>
-      )}
+        )}
 
-    </View>
-
-     {isOwnProfile && (
-  <TouchableOpacity
-    onPress={() => navigation.navigate("EditProfilePage" as never)}
-    style={{
-      backgroundColor: "#eee",
-      paddingVertical: 6,
-      paddingHorizontal: 12,
-      borderRadius: 8,
-      marginTop: 8
-    }}
-  >
-    <Text style={{ fontSize: 14 }}>Editar perfil</Text>
-  </TouchableOpacity>
-)}
-
+        {isOwnProfile && (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("EditProfilePage" as never)}
+            style={styles.editButton}
+          >
+            <Text style={styles.editButtonText}>Editar perfil</Text>
+          </TouchableOpacity>
+        )}
 
         <Text
           variant="bodyMedium"
-          style={{
-            color: profile.bio ? theme.colors.onSurface : theme.colors.onSurfaceDisabled,
-            fontStyle: profile.bio ? "normal" : "italic",
-            marginTop: 4,
-            textAlign: "center",
-          }}
+          style={[
+            styles.bio,
+            {
+              color: profile.bio
+                ? theme.colors.onSurface
+                : theme.colors.onSurfaceDisabled,
+              fontStyle: profile.bio ? "normal" : "italic",
+            },
+          ]}
         >
           {profile.bio || "Este usuario no tiene biografía"}
         </Text>
@@ -130,13 +124,9 @@ export default function ProfileHeader({
           />
         )}
 
-        {/* Ciudad y país */}
         {(profile.city || profile.country_iso) && (
           <View style={styles.locationRow}>
-            <Text
-              variant="bodySmall"
-              style={{ color: theme.colors.onSurfaceVariant }}
-            >
+            <Text style={styles.locationText}>
               {profile.city
                 ? `${profile.city}${profile.country_iso ? ", " : ""}`
                 : ""}
@@ -145,35 +135,29 @@ export default function ProfileHeader({
             {flag && (
               <Image
                 source={{ uri: flag }}
-                style={{ width: 18, height: 12, marginLeft: 6 }}
+                style={styles.flagImage}
               />
             )}
           </View>
         )}
 
-        {/* Estadísticas */}
+        {/* STATS */}
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <Text variant="titleSmall" style={styles.statNumber}>
-              {profile.posts_count ?? 0}
-            </Text>
-            <Text variant="bodySmall">publicaciones</Text>
+            <Text style={styles.statNumber}>{profile.posts_count ?? 0}</Text>
+            <Text style={styles.statLabel}>publicaciones</Text>
           </View>
           <View style={styles.statItem}>
-            <Text variant="titleSmall" style={styles.statNumber}>
-              {profile.followers_count ?? 0}
-            </Text>
-            <Text variant="bodySmall">seguidores</Text>
+            <Text style={styles.statNumber}>{profile.followers_count ?? 0}</Text>
+            <Text style={styles.statLabel}>seguidores</Text>
           </View>
           <View style={styles.statItem}>
-            <Text variant="titleSmall" style={styles.statNumber}>
-              {profile.following_count ?? 0}
-            </Text>
-            <Text variant="bodySmall">seguidos</Text>
+            <Text style={styles.statNumber}>{profile.following_count ?? 0}</Text>
+            <Text style={styles.statLabel}>seguidos</Text>
           </View>
         </View>
 
-        <Divider style={{ marginTop: 20 }} />
+        <Divider style={{ marginTop: 20, width: "100%" }} />
       </View>
     </View>
   );
@@ -185,41 +169,73 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   headerGradient: {
-    height: 150,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
+    height: 160,
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
+  },
+  settingsButton: {
+    position: "absolute",
+    top: 45,
+    right: 20,
+    zIndex: 5,
   },
   avatarContainer: {
     position: "absolute",
-    top: 75,
+    top: 90,
     left: "50%",
     transform: [{ translateX: -75 }],
-    alignItems: "center",
+    zIndex: 10,
   },
   avatar: {
-    backgroundColor: "#E0E0E0",
+    backgroundColor: "#ccc",
     borderWidth: 4,
     borderColor: "#fff",
-    elevation: 4,
   },
   infoContainer: {
-    marginTop: 100,
+    marginTop: 180,
     alignItems: "center",
     paddingHorizontal: 16,
   },
   username: {
     fontWeight: "700",
+    marginTop: 10,
+  },
+  displayname: {
+    color: "#666",
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  editButton: {
+    backgroundColor: "#eee",
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    marginTop: 6,
+  },
+  editButtonText: {
+    fontSize: 14,
+  },
+  bio: {
+    marginTop: 10,
     textAlign: "center",
   },
   locationRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 6,
+    marginTop: 8,
+  },
+  locationText: {
+    color: "#666",
+  },
+  flagImage: {
+    width: 18,
+    height: 12,
+    marginLeft: 6,
   },
   statsRow: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginTop: 12,
+    marginTop: 16,
     width: "100%",
   },
   statItem: {
@@ -227,5 +243,10 @@ const styles = StyleSheet.create({
   },
   statNumber: {
     fontWeight: "700",
+    fontSize: 16,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: "#666",
   },
 });

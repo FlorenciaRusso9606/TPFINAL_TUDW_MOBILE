@@ -7,31 +7,41 @@ export const lightTheme = {
   mode: "light" as const,
   colors: {
     ...PaperLight.colors,
-    primary: "#1976d2",
-    onPrimary: "#ffffff",
-    primaryContainer: "#e3f2fd",
-    secondary: "#9c27b0",
-    onSecondary: "#ffffff",
-    background: "#f5f5f5",
-    surface: "#ffffff",
-    onSurface: "#000000",
-    outline: "#bdbdbd",
-    error: "#ef5350",
-    success: "#66bb6a",
-    warning: "#ffb300",
-    textPrimary: "#000000",
-    textSecondary: "#555555",
+
+    
+    primary: "#C2185B",
+    onPrimary: "#FFFFFF",
+
+    secondary: "#6C5CE7",
+    onSecondary: "#FFFFFF",
+
+    background: "#FFFFFF",
+    surface: "#FFFFFF",
+
+    text: "#0F1724",
+    textSecondary: "#6B7280",
+
+    border: "#E6E9F0",
+
+    accent: "#046177",
+    success: "#16A34A",
+    warning: "#F59E0B",
+    danger: "#DC2626",
+    info: "#2563EB",
   },
+
   components: {
     ...baseTheme.components,
+
     input: {
       ...baseTheme.components.inputBase,
-      backgroundColor: "#ffffff",
-      borderColor: "#bdbdbd",
+      backgroundColor: "#FFFFFF",
+      borderColor: "#E6E9F0",
     },
+
     button: {
       ...baseTheme.components.buttonBase,
-      backgroundColor: "#1976d2",
+      backgroundColor: "#C2185B",
     },
   },
 };

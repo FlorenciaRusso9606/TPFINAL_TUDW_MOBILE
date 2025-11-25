@@ -13,7 +13,6 @@ export default function ChatScreen({ route }: any) {
   const safeId = (prefix: string) => `${prefix}-${Date.now()}-${Math.random()}`;
 useEffect(() => {
   getMessagesWith(userId).then(r => {
-    console.log("🟩 MENSAJES RAW:", JSON.stringify(r, null, 2));
 
     const normalized = (r || []).map((msg: any, idx: number) => ({
       ...msg,
@@ -26,14 +25,12 @@ useEffect(() => {
            text: msg.text || msg.content || "",
     }));
 
-    console.log("🟧 NORMALIZADOS:", JSON.stringify(normalized, null, 2));
 
     const sorted = normalized.sort(
       (a: any, b: any) =>
         new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
     );
 
-    console.log("🟥 ORDENADOS:", JSON.stringify(sorted, null, 2));
 
     setMessages(sorted);
   });
@@ -41,7 +38,6 @@ useEffect(() => {
 
   // ---- Handler del socket ----
   const onMessage = useCallback((m: any) => {
-  console.log("🟪 SOCKET MESSAGE:", JSON.stringify(m, null, 2));
 
   const id =
     typeof m.id === 'string'
@@ -85,7 +81,6 @@ text: m.content || "",  };
   }, [userId]);
 
   // ---- Enviar mensaje ----
-  // ---- Enviar mensaje ----
 const handleSend = async (text: string) => {
   const tempId = safeId('temp');
 
@@ -108,7 +103,7 @@ const handleSend = async (text: string) => {
   } catch (e) {
     console.error("❌ Error enviando mensaje:", e);
   }
-}; // <-- ESTA era la llave que faltaba
+}; 
 
 
  // ---- Scroll automático ----
@@ -121,7 +116,6 @@ messages.forEach((m, i) => {
 });
 
 
-console.log("🟨 RENDERING MESSAGES:", messages);
 
  return (
   <View style={{ flex: 1 }}>

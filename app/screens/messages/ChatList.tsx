@@ -20,7 +20,6 @@ export default function ChatList({ navigation }: any) {
   useEffect(() => {
     if (isFocused) {
       getConversations().then(r => {
-        console.log("🟦 CONVERSACIONES:", JSON.stringify(r, null, 2));
         setConvs(r || []);
       });
     }

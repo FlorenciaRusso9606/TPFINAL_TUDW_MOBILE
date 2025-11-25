@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { View, Image, ScrollView } from "react-native";
-import { Card, TextInput, Button, Switch, Text, ActivityIndicator } from "react-native-paper";
+import { View, Image, ScrollView , Pressable} from "react-native";
+import { Card, TextInput, Button, Switch, Text, ActivityIndicator  } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "../../context/AuthBase";
 import { fetchWeatherByCity } from "../../services/weatherService";
 import api from "../../api/api";
+import { Platform, ToastAndroid, Alert } from "react-native";
+import { Wind } from "lucide-react-native";
 
 type MediaFile = {
   uri: string;
@@ -27,6 +29,14 @@ export default function CreatePostScreen({ navigation }: any) {
   const [weatherData, setWeatherData] = useState<any | null>(null);
 
   const { user } = useAuth();
+
+const showToast = (msg: string) => {
+  if (Platform.OS === "android") {
+    ToastAndroid.show(msg, ToastAndroid.SHORT);
+  } else {
+    Alert.alert("", msg);
+  }
+};
 
   // PICK IMAGEN O VIDEO
   const pickImageOrVideo = async () => {
@@ -186,17 +196,48 @@ const res = await ImagePicker.launchImageLibraryAsync({
           </ScrollView>
 
           {/* WEATHER */}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginBottom: 12,
-              alignItems: "center",
-            }}
-          >
-            <Text>Adjuntar clima</Text>
-            <Switch value={attachWeather} onValueChange={setAttachWeather} />
-          </View>
+          <View style={{ alignItems: "flex-start", marginBottom: 12 }}>
+  <Pressable
+  accessible={true}
+    onPress={async () => {
+      const newState = !attachWeather;
+      setAttachWeather(newState);
+
+      if (newState) {
+        if (weatherData) {
+          const temp = Math.round(weatherData.current.temp);
+          const desc =
+            weatherData.current.weather?.[0]?.description ?? "";
+          showToast(`Clima agregado: ${temp}° ${desc}`);
+        } else {
+          showToast("Obteniendo clima...");
+        }
+      } else {
+        showToast("Clima desactivado");
+      }
+    }}
+    accessibilityRole="button"
+    accessibilityLabel={
+      attachWeather ? "Desactivar clima" : "Activar clima"
+    }
+accessibilityState={{ selected: attachWeather }}
+    style={{
+      borderRadius: 8,
+      borderColor: "#ccc",
+      borderWidth: 1,
+      width: 44,   
+      height: 44,  
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <Wind size={24} color="#333" />
+  </Pressable>
+
+  <Text style={{ fontSize: 12, opacity: 0.7 }}>
+    {attachWeather ? "Clima activado" : "Agregar clima"}
+  </Text>
+</View>
 
           {attachWeather && weatherData && (
             <Text style={{ marginBottom: 12 }}>
