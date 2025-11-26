@@ -30,6 +30,8 @@ const Comments: React.FC<CommentProps> = ({ postId }) => {
     try {
       const { data } = await api.get<Comment[]>(`/comments/post/${postId}`);
       setComments(data);
+      console.log("📌 COMMENTS FETCHED:", data)
+
     } catch (error) {
       toast.show({
         type: "error",
@@ -194,7 +196,6 @@ export default Comments;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingHorizontal: 16,
     paddingTop: 12,
   },

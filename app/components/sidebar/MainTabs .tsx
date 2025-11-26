@@ -17,7 +17,7 @@ import {
 } from "lucide-react-native";
 import { fetchWeatherByCity } from "../../../services/weatherService";
 
-export default function SidebarDrawer(props: DrawerContentComponentProps) {
+export default function MainTabs (props: DrawerContentComponentProps) {
   const { user, loading, logout } = useAuth();
   const [weather, setWeather] = React.useState<any | null>(null);
   const {theme} = useThemeContext()

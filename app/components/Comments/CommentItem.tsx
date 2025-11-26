@@ -170,7 +170,14 @@ export const CommentItem: React.FC<CommentItemProps> = ({
 
           {showReplies &&
             comment.children.map((child) => (
-              <CommentItem key={child.id} comment={child} onReply={onReply} />
+              <CommentItem
+  key={child.id}
+  comment={child}
+  onReply={onReply}
+  onEdit={onEdit}
+  onDelete={onDelete}
+/>
+
             ))}
         </View>
       ) : null}
@@ -201,12 +208,14 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 6,
   },
-  icons: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 4,
-  },
+ icons: {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 8,
+  marginTop: 4,
+},
+
+
   replies: {
     marginTop: 8,
     marginLeft: 16,

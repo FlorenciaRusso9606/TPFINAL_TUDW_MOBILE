@@ -1,19 +1,23 @@
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import BottomTabs from "./BottomTabs";
-import SidebarDrawer from "app/components/sidebar/SideDrawer";
-import { RootDrawerParamList } from "../../types/Navigation";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import DrawerNavigator  from "./AppNavigator";
+import PostDetail from "../screens/PostDetail";
 
-const Drawer = createDrawerNavigator<RootDrawerParamList>();
+const Stack = createNativeStackNavigator();
 
-export default function AppNavigator() {
-  const drawerProps: any = {
-    drawerContent: (props: any) => <SidebarDrawer {...props} />,
-    screenOptions: { headerShown: false, drawerType: "front" },
-  };
+export default function AppStack() {
+ 
 
   return (
-    <Drawer.Navigator {...drawerProps}>
-      <Drawer.Screen name="MainTabs" component={BottomTabs} />
-    </Drawer.Navigator>
+     <Stack.Navigator screenOptions={{ headerShown: false }}>
+           <Stack.Screen name="HomeDrawer" component={DrawerNavigator } />
+ <Stack.Screen
+        name="PostDetail"
+        component={PostDetail}
+        options={{
+          headerShown: true,
+          title: "Publicación",
+        }}
+      />
+    </Stack.Navigator>
   );
 }

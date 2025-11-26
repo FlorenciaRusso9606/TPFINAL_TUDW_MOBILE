@@ -24,11 +24,11 @@ export default function CreatePostScreen({ navigation }: any) {
     type: "success" | "error" | null;
     text: string | null;
   }>({ type: null, text: null });
+  const { user } = useAuth();
 
   const [attachWeather, setAttachWeather] = useState(false);
   const [weatherData, setWeatherData] = useState<any | null>(null);
 
-  const { user } = useAuth();
 
 const showToast = (msg: string) => {
   if (Platform.OS === "android") {

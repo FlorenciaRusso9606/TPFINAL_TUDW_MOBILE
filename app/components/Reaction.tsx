@@ -130,7 +130,8 @@ export const Reaction: React.FC<PostReactionProps> = ({ targetId, type }) => {
       </TouchableOpacity>
 
       {/* 🔁 Botón de compartir */}
-      <TouchableOpacity
+      {type === "post" && (
+        <TouchableOpacity
         style={styles.reactionButton}
         onPress={handleShare}
         disabled={loading || shared}
@@ -153,6 +154,7 @@ export const Reaction: React.FC<PostReactionProps> = ({ targetId, type }) => {
           {shared ? "Compartido" : "Compartir"}
         </Text>
       </TouchableOpacity>
+      )}
     </View>
   );
 };

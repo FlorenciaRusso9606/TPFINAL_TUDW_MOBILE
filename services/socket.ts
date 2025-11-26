@@ -4,7 +4,7 @@ const isNative =
   typeof navigator === "undefined" || navigator.product === "ReactNative";
 
 // Creamos la conexión
-const socket = io("http://api.bloom.cool", {
+const socket = io("https://api.bloop.cool", {
   transports: ["websocket"],
   ...(isNative
     ? {

@@ -8,13 +8,16 @@ import {
   Button,
   Divider,
 } from "react-native-paper";
-import { Save, X, Languages, Share2 } from "lucide-react-native";
+import { Save, X, Languages, Share2, MessageCircle } from "lucide-react-native";
 import { Media } from "../../../types/post";
 import { Reaction } from "../Reaction";
 import { updatePost } from "../../../services/postService";
 import useTranslation from "../../../hooks/useTranslation";
 import { useThemeContext } from "../../../context/ThemeContext";
 import { LucideProps } from "lucide-react-native";
+import api from "../../../api/api";
+import { TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 interface PostBodyProps {
   post: any;
   description: string;
@@ -39,16 +42,32 @@ export default function PostBody({
   const [text, setText] = useState(description);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<{ type: "error" | "success" | null; text?: string } | null>(null);
+  const [commentCounter, setCommentCounter] = useState<number>(0);
 
   const { translated, sourceLang, loading: tlLoading, translate, clear } = useTranslation();
   const postId = post.id.toString();
-
+const navigation: any = useNavigation()
   const browserLang = "es"; // en mobile no hay navigator.language
   const showTranslateButton = useMemo(() => {
     if (translated) return false;
     if (sourceLang && sourceLang.toUpperCase() === browserLang.toUpperCase()) return false;
     return true;
   }, [translated, sourceLang]);
+
+  const fetchComments = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get<Comment[]>(`/comments/post/${postId}`);
+      setCommentCounter(data.length)
+    } catch (error) {
+      setLoading(false)
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchComments();
+  }, []);
 
   const handleSave = async () => {
     setLoading(true);
@@ -146,6 +165,17 @@ export default function PostBody({
             </Button>
           </View>
         )}
+       {/* Comentarios */}
+<TouchableOpacity
+  style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+  onPress={() => navigation.navigate("PostDetail" , { postId: postId })}
+>
+  <MessageCircle size={20} color={theme.colors.onSurfaceVariant} />
+  <Text style={{ color: theme.colors.onSurfaceVariant }}>
+    {commentCounter}
+  </Text>
+</TouchableOpacity>
+
       </View>
 
       {/* Mensajes */}

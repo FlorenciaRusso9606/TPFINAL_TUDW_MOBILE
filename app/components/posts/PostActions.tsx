@@ -18,6 +18,7 @@ export default function PostActions({
   onReport,
   loading,
   isOwn,
+  
 }: PostActionsProps) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [reportVisible, setReportVisible] = useState(false);

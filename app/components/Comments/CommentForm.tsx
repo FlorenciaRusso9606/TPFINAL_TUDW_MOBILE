@@ -18,9 +18,9 @@ const CommentForm: React.FC<Props> = ({ onSubmit, parentId }) => {
   const { control, handleSubmit, reset, formState } = useForm<CommentFormData>({
     resolver: zodResolver(commentSchema),
   });
+  const { user } = useAuth();
 
   const { errors, isSubmitting } = formState;
-  const { user } = useAuth();
   const {theme} = useThemeContext();
 
   const handleFormSubmit = async (data: CommentFormData) => {
@@ -47,7 +47,7 @@ const CommentForm: React.FC<Props> = ({ onSubmit, parentId }) => {
           source={
             user?.profile_picture_url
               ? { uri: user.profile_picture_url }
-              : require("../../assets/default-avatar-icon.jpg")
+              : require("../../../assets/default-avatar-icon.jpg")
           }
         />
 
